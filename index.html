@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta
+      name="description"
+      content="interactive map built with leaflet.js "
+    />
+    <title>Leaflet | JavaScript Library</title>
+    <!-- Leaflet CSS file -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+   crossorigin=""/>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+
+    <style>
+        #map {
+            height: 350px;
+            width: 350px;
+            }
+    </style>
+</head>
+<body>
+    
+    <div id="map"></div>
+
+    
+</body>
+<!-- leaflet js -->
+<script>
+    // Initializes map & sets initial coordinates and zoom level
+    // ps this set location is Netscape the home of JS!
+    var map = L.map('map').setView([37.395210, -122.053780], 13);
+
+    // Sets map data source and associates with map
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    navigator.geolocation.watchPosition(success, error);
+
+    let marker, circle, zoomed;
+
+    function success(pos) {
+
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const accuracy = pos.coords.accuracy;
+
+        // Removes any existing marker and circle (new ones about to be set)
+        if (marker) {
+            map.removeLayer(marker);
+            map.removeLayer(circle);
+        }
+
+        // Adds marker to the map and a circle for accuracy
+        l.marker([lat, lng]).addTo(map);
+        L.circle([lat, lng], { radius: accuracy }).addTo(map);
+        
+        // Set zoom to boundaries of accuracy circle
+        if (!zoomed) {
+            zoomed = map.fitBound(circle.getBounds());
+        }
+        
+        // Set map focus to current user position
+        map.setView([lat, lng]);
+
+    }
+
+    function error(err) {
+        if (err.code === 1) {
+            alert("Please allow geolocation access");
+        } else {
+            alert("Cannot get current location");
+        }
+    }
+</script>
+</html>
